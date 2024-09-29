@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>世界和平 - 个人网站</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .ai-chat-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .ai-chat-modal {
+            background-color: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .close-chat {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            padding: 10px 15px;
+            margin-right: 10px;
+        }
+
+        .chat-input button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+
+        .user {
+            background-color: #e6f3ff;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .assistant {
+            background-color: #f0f0f0;
+            align-self: flex-start;
+        }
+
+        .typing-indicator {
+            display: flex;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            align-self: flex-start;
+        }
+
+        .typing-indicator span {
+            height: 10px;
+            width: 10px;
+            float: left;
+            margin: 0 1px;
+            background-color: #9E9EA1;
+            display: block;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        .typing-indicator span:nth-of-type(1) {
+            animation: 1s blink infinite 0.3333s;
+        }
+
+        .typing-indicator span:nth-of-type(2) {
+            animation: 1s blink infinite 0.6666s;
+        }
+
+        .typing-indicator span:nth-of-type(3) {
+            animation: 1s blink infinite 0.9999s;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <header id="main-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <h1 class="site-title">世界和平 <i class="fas fa-dove"></i></h1>
+                </div>
+                <div class="col-md-8">
+                    <nav>
+                        <ul class="nav justify-content-end">
+                            <li class="nav-item"><a class="nav-link" href="#about">关于我</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#photo-gallery">作品集</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#contact">联系我</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#ai-assistant">AI助手</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <section id="hero" class="section text-center animate__animated animate__fadeIn">
+                    <h1 data-aos="fade-up" class="display-4">欢迎来到我的世界</h1>
+                    <p data-aos="fade-up" data-aos-delay="200" class="lead">探索创意，分享灵感，一起成长</p>
+                    <a href="#about" class="btn btn-primary btn-lg mt-3" data-aos="fade-up" data-aos-delay="400">了解更多</a>
+                </section>
+
+                <section id="about" class="section animate__animated">
+                    <h2 data-aos="fade-up">关于我</h2>
+                    <div class="row align-items-center">
+                        <div class="col-md-4" data-aos="fade-right">
+                            <img src="image/微信图片_20240929001116.jpg" alt="我的照片" class="img-fluid rounded-circle mb-3 shadow-lg" style="max-width: 80%;">
+                        </div>
+                        <div class="col-md-8" data-aos="fade-left">
+                            <p>大家好，我是世界和平。作为一名充满激情的创意工作者，我致力于探索艺术与科技的交汇点。我的作品融合传统技巧和现代技术，旨在创造既有视觉冲击力又能引发深思的作品。</p>
+                            <div class="mt-4">
+                                <h4>我的技能</h4>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar" role="progressbar" style="width: 90%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">数字艺术 90%</div>
+                                </div>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">创意设计 85%</div>
+                                </div>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">项目管理 80%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="photo-gallery" class="section animate__animated">
+                    <h2 data-aos="fade-up">我的作品集</h2>
+                    <div class="photo-gallery-container" data-aos="fade-up">
+                        <div class="photo-item">
+                            <img src="image/MJ_20240726_085243.png" alt="作品1" class="img-fluid">
+                            <div class="photo-overlay">
+                                <h3>创意视觉</h3>
+                                <p>探索色彩与形状的无限可能</p>
+                                <button class="btn btn-light btn-sm">查看详情</button>
+                            </div>
+                        </div>
+                        <div class="photo-item">
+                            <img src="image/MJ_20240726_085228.png" alt="作品2" class="img-fluid">
+                            <div class="photo-overlay">
+                                <h3>未来科技</h3>
+                                <p>融合科技与艺术的前沿作品</p>
+                                <button class="btn btn-light btn-sm">查看详情</button>
+                            </div>
+                        </div>
+                        <div class="photo-item">
+                            <img src="image/MJ_20240726_085629.png" alt="作品3" class="img-fluid">
+                            <div class="photo-overlay">
+                                <h3>自然之美</h3>
+                                <p>捕捉大自然的瞬息万变</p>
+                                <button class="btn btn-light btn-sm">查看详情</button>
+                            </div>
+                        </div>
+                        <div class="photo-item">
+                            <img src="image/MJ_20240726_085648.png" alt="作品4" class="img-fluid">
+                            <div class="photo-overlay">
+                                <h3>抽象艺术</h3>
+                                <p>突破传统，展现独特视角</p>
+                                <button class="btn btn-light btn-sm">查看详情</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="testimonials" class="section animate__animated animate__fadeIn">
+                    <div class="section-content">
+                        <h2 data-aos="fade-up">客户评价</h2>
+                        <div class="row justify-content-center">
+                            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                                <div class="testimonial-card">
+                                    <p class="testimonial-text">"非常棒的作品，充满创意和激情！"</p>
+                                    <p class="testimonial-author">张三, <span>设计公司CEO</span></p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                                <div class="testimonial-card">
+                                    <p class="testimonial-text">"专业水准，令人印象深刻。"</p>
+                                    <p class="testimonial-author">李四, <span>摄影杂志主编</span></p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                                <div class="testimonial-card">
+                                    <p class="testimonial-text">"独特的视角，卓越的表现力。"</p>
+                                    <p class="testimonial-author">王五, <span>艺术总监</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="ai-assistant" class="section animate__animated">
+                    <div class="section-content">
+                        <h2 data-aos="fade-up">AI 助手</h2>
+                        <div class="row align-items-center">
+                            <div class="col-md-6" data-aos="fade-right">
+                                <i class="fas fa-robot fa-10x text-primary"></i>
+                            </div>
+                            <div class="col-md-6" data-aos="fade-left">
+                                <p>体验智能对话，获得即时帮助。我的 AI 助手随时为您服务，解答问题、提供建议，让沟通更加便捷高效。</p>
+                                <button id="open-chat-section" class="btn btn-primary mt-3">开始对话</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="contact" class="section animate__animated animate__fadeIn">
+                    <h2 data-aos="fade-up">联系我</h2>
+                    <form id="contact-form" action="https://formspree.io/f/xyyqnkjk" method="POST" data-aos="fade-up">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">姓名</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">邮箱</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">消息</label>
+                            <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                        </div>
+                        <input type="hidden" name="_subject" value="新的网站留言">
+                        <input type="hidden" name="_cc" value="3195782512@qq.com">
+                        <button type="submit" class="btn btn-primary">发送</button>
+                    </form>
+                    <div id="form-status" class="mt-3" style="display: none;"></div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-light py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5>关于我</h5>
+                    <p class="text-muted">我是世界和平,一名致力于通过创意和艺术传播和平理念的个人艺术家。我相信艺术的力量可以跨越边界,传播爱与和谐。</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5>网站导航</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#about">关于我</a></li>
+                        <li><a href="#photo-gallery">作品集</a></li>
+                        <li><a href="#testimonials">客户评价</a></li>
+                        <li><a href="#ai-assistant">AI助手</a></li>
+                        <li><a href="#contact">联系我</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>联系方式</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope mr-2"></i> hujiazheng175@gmail.com</li>
+                        <li><i class="fas fa-phone mr-2"></i> +86 177 6267 6362</li>
+                    </ul>
+                    <div class="social-icons mt-3">
+                        <a href="https://www.douyin.com/user/self?from_tab_name=main" target="_blank" title="抖音"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://space.bilibili.com/508344530" target="_blank" title="哔哩哔哩"><i class="fab fa-bilibili"></i></a>
+                        <a href="#" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://github.com/YourGitHubUsername" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="mailto:hujiazheng175@gmail.com" title="Gmail"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; 2023 世界和平. 保留所有权利.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="privacy-policy.html" class="text-muted me-2">隐私政策</a> | 
+                    <a href="terms-of-service.html" class="text-muted">服务条款</a>
+                    <!-- 添加烟花按钮 -->
+                    <button id="fireworks-btn" class="btn btn-sm btn-outline-secondary ms-2" title="放烟花">
+                        <i class="fas fa-sparkles"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="ai-chat-overlay" class="ai-chat-overlay">
+        <div id="ai-chat-modal" class="ai-chat-modal">
+            <div class="chat-header">
+                <h3><i class="fas fa-robot"></i> AI助手</h3>
+                <button id="close-ai-chat" class="close-chat"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="ai-chat-messages" class="chat-messages"></div>
+            <div class="chat-input">
+                <input type="text" id="ai-user-input" placeholder="输入消息...">
+                <button id="ai-send-message"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="fireworks-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; display: none;"></div>
+    <div id="welcome-message" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10000; display: none; font-size: 24px; color: white; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">欢迎访问世界和平的主页</div>
+    <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.x/dist/index.umd.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true,
+            mirror: true
+        });
+
+        // 添加平滑滚动效果
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 添加滚动触发动画
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= window.innerHeight * 0.75 && rect.bottom >= 0) {
+                    section.classList.add('animate__animated', 'animate__fadeIn');
+                }
+            });
+        });
+
+        // 平滑滚动功能
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+
+            if (targetElement) {
+              window.scrollTo({
+                top: targetElement.offsetTop - 100, // 减去100px以考虑固定头部的高度
+                behavior: 'smooth'
+              });
+            }
+          });
+        });
+
+        // AI助手聊天功能
+        document.addEventListener('DOMContentLoaded', () => {
+            const aiChatOverlay = document.getElementById('ai-chat-overlay');
+            const aiChatModal = document.getElementById('ai-chat-modal');
+            const aiChatMessages = document.getElementById('ai-chat-messages');
+            const aiUserInput = document.getElementById('ai-user-input');
+            const aiSendMessage = document.getElementById('ai-send-message');
+            const openChatSection = document.getElementById('open-chat-section');
+            const closeAiChat = document.getElementById('close-ai-chat');
+
+            console.log('Script loaded');
+            console.log('openChatSection:', openChatSection);
+            console.log('aiChatOverlay:', aiChatOverlay);
+
+            openChatSection.addEventListener('click', () => {
+                console.log('打开聊天窗口');
+                aiChatOverlay.style.display = 'flex';
+            });
+
+            closeAiChat.addEventListener('click', () => {
+                console.log('关闭聊天窗口');
+                aiChatOverlay.style.display = 'none';
+            });
+
+            aiSendMessage.addEventListener('click', sendMessage);
+            aiUserInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            async function sendMessage() {
+                const userMessage = aiUserInput.value.trim();
+                if (userMessage) {
+                    displayMessage('user', userMessage);
+                    aiUserInput.value = '';
+
+                    // 显示等待动画
+                    const typingIndicator = document.createElement('div');
+                    typingIndicator.className = 'typing-indicator';
+                    typingIndicator.innerHTML = '<span></span><span></span><span></span>';
+                    aiChatMessages.appendChild(typingIndicator);
+                    aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+
+                    try {
+                        const response = await axios.post('https://open.bigmodel.cn/api/paas/v4/chat/completions', {
+                            model: "glm-4",
+                            messages: [
+                                {"role": "user", "content": userMessage}
+                            ],
+                        }, {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer 8a5e21406615c798c7f4659fc00b9fd8.WIxd0gEgUmHuq7iP'
+                            }
+                        });
+
+                        // 移除等待动画
+                        aiChatMessages.removeChild(typingIndicator);
+
+                        const aiResponse = response.data.choices[0].message.content;
+                        displayMessage('assistant', aiResponse);
+                    } catch (error) {
+                        console.error('AI响应错误:', error);
+                        // 移除等待动画
+                        aiChatMessages.removeChild(typingIndicator);
+                        displayMessage('assistant', '抱歉，我遇到了一些问题。请稍后再试。');
+                    }
+                }
+            }
+
+            function displayMessage(role, content) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message', role);
+                messageElement.textContent = content;
+                aiChatMessages.appendChild(messageElement);
+                aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+            }
+        });
+    </script>
+    <script src="path/to/your/script.js"></script>
+    <!-- 在 body 结束标签之前添加 -->
+    <div id="easter-egg" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10000; font-size: 24px; color: white; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); background: rgba(0, 0, 0, 0.7); padding: 20px; border-radius: 10px;">
+        Surprise!
+    </div>
+</body>
+</html>
